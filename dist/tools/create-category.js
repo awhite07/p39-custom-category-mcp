@@ -1,8 +1,60 @@
 import { CreateCategoryInputSchema } from '../validation/schemas.js';
 import { createCategory } from '../api/categories.js';
-import { resolvePartnerId } from '../partners.js';
+import { resolvePartnerId, partnerIdToName } from '../partners.js';
 import { resolve } from '../resolve.js';
-import { errorResult, formatToolError, jsonResult } from './index.js';
+import { errorResult, formatToolError, textResult } from './index.js';
+const CATEGORY_TYPE_NAMES = {
+    2: 'Keyword',
+    3: 'URL',
+    5: 'Mobile App',
+    6: 'CTV App',
+    7: 'Mobile App Keywords',
+    8: 'CTV Keywords',
+};
+export function formatCreatedSummary(opts) {
+    const v = opts.res.value ?? {};
+    const typeName = CATEGORY_TYPE_NAMES[opts.type] ?? `type ${opts.type}`;
+    const partnerSlug = partnerIdToName(opts.partnerId);
+    const partnerLabel = partnerSlug ? `${partnerSlug} (id ${opts.partnerId})` : `partner id ${opts.partnerId}`;
+    const partnerDisplay = partnerSlug ? prettifyPartnerName(partnerSlug) : `partner id ${opts.partnerId}`;
+    const buyerLabel = v.buyerName ? `${v.buyerName} (buyer id ${opts.buyerId})` : `buyer id ${opts.buyerId}`;
+    const categoryName = (typeof v.categoryName === 'string' && v.categoryName) ? v.categoryName : opts.categoryName;
+    const partnerCategoryId = v.partner?.partnerCategoryId;
+    const accountCategoryId = v.accountCategoryId;
+    let itemsLine = `- Items: ${opts.items.length}`;
+    if (opts.itemsTypes && opts.itemsTypes.length > 0) {
+        const counts = opts.itemsTypes.reduce((acc, t) => {
+            acc[t] = (acc[t] ?? 0) + 1;
+            return acc;
+        }, {});
+        const breakdown = Object.entries(counts).map(([k, n]) => `${n} ${k.toLowerCase()}`).join(', ');
+        itemsLine += ` (${breakdown})`;
+    }
+    const lines = [
+        'Category created.',
+        '',
+        `**${categoryName}**`,
+        `- Type: ${typeName}`,
+        itemsLine,
+        `- DSP: ${partnerLabel}`,
+        `- Buyer account: ${buyerLabel}`,
+    ];
+    if (opts.expirationDate)
+        lines.push(`- Expires: ${opts.expirationDate}`);
+    if (partnerCategoryId !== undefined)
+        lines.push(`- Partner category ID: ${partnerCategoryId}`);
+    if (accountCategoryId !== undefined)
+        lines.push(`- Account category ID: ${accountCategoryId}`);
+    lines.push('');
+    lines.push(`The category is now live on ${partnerDisplay}.`);
+    return lines.join('\n');
+}
+function prettifyPartnerName(slug) {
+    return slug
+        .split('-')
+        .map((w) => (w.length === 0 ? w : w[0].toUpperCase() + w.slice(1)))
+        .join(' ');
+}
 export const createCategoryTool = {
     name: 'peer39_create_category',
     description: `Create a new Peer39 custom category and sync it to a connected DSP.
@@ -72,7 +124,16 @@ After step 4 (name confirmed) you have everything. Call this tool. Do NOT do a "
                     languageCodes: args.languageCodes,
                 },
             }, { system });
-            return jsonResult(res);
+            return textResult(formatCreatedSummary({
+                res,
+                categoryName: args.categoryName,
+                type: args.type,
+                items: args.items,
+                itemsTypes: args.itemsTypes,
+                partnerId,
+                buyerId,
+                expirationDate: args.expirationDate,
+            }));
         }
         catch (err) {
             return formatToolError(err);

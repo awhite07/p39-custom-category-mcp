@@ -32,6 +32,9 @@ export function errorResult(text) {
 export function jsonResult(value) {
     return { content: [{ type: 'text', text: JSON.stringify(value, null, 2) }] };
 }
+export function textResult(text) {
+    return { content: [{ type: 'text', text }] };
+}
 export function formatToolError(err) {
     if (err instanceof MissingConfigError)
         return errorResult(err.message);

@@ -17,5 +17,6 @@ export declare const tools: ToolDefinition[];
 export declare function toJsonSchema(schema: ZodTypeAny): ReturnType<typeof zodToJsonSchema>;
 export declare function errorResult(text: string): ToolResult;
 export declare function jsonResult(value: unknown): ToolResult;
+export declare function textResult(text: string): ToolResult;
 export declare function formatToolError(err: unknown): ToolResult;
 //# sourceMappingURL=index.d.ts.map
