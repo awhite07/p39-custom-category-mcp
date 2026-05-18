@@ -275,7 +275,7 @@ Manual install — paste this entry under "mcpServers" in the config file above:
 
   "peer39": {
     "command": "npx",
-    "args": ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.1"],
+    "args": ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.2"],
     "env": {
       "PEER39_USERNAME": "$USERNAME",
       "PEER39_PASSWORD": "<your password>"
@@ -331,7 +331,7 @@ EOF
         if (process.env.PEER39_USER_EMAIL_FOR_NODE) env.PEER39_USER_EMAIL = process.env.PEER39_USER_EMAIL_FOR_NODE;
         cfg.mcpServers.peer39 = {
           command: "npx",
-          args: ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.1"],
+          args: ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.2"],
           env,
         };
         const tmp = p + ".tmp";
@@ -346,7 +346,7 @@ EOF
 
   "peer39": {
     "command": "npx",
-    "args": ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.1"],
+    "args": ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.2"],
     "env": {
       "PEER39_USERNAME": "$USERNAME",
       "PEER39_PASSWORD": "<your password>"

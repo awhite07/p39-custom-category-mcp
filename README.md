@@ -23,11 +23,11 @@ A single script handles the whole integration: it verifies your OS, that Claude 
 **2. Paste these two lines into the terminal and press Return**
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/awhite07/p39-custom-category-mcp/v1.0.1/scripts/preflight.sh -o /tmp/peer39-integration.sh
+curl -fsSL https://raw.githubusercontent.com/awhite07/p39-custom-category-mcp/v1.0.2/scripts/preflight.sh -o /tmp/peer39-integration.sh
 bash /tmp/peer39-integration.sh
 ```
 
-> The URL pins to a specific release tag (`v1.0.1`) rather than `main` so you always get a known-good script — the GitHub CDN can lag behind `main` by several minutes after a push.
+> The URL pins to a specific release tag (`v1.0.2`) rather than `main` so you always get a known-good script — the GitHub CDN can lag behind `main` by several minutes after a push.
 
 The script will prompt for:
 
@@ -58,7 +58,7 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) o
   "mcpServers": {
     "peer39": {
       "command": "npx",
-      "args": ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.1"],
+      "args": ["-y", "github:awhite07/p39-custom-category-mcp#v1.0.2"],
       "env": {
         "PEER39_USERNAME": "your.api.user",
         "PEER39_PASSWORD": "your-api-password",
@@ -168,7 +168,7 @@ User-facing URLs in this README and in `scripts/preflight.sh` pin to a specific 
 2. Commit the version bumps and push to `main`.
 3. Tag and push: `git tag v1.0.0 && git push origin v1.0.0`.
 
-Testers running the curl URL or `npx -y github:awhite07/p39-custom-category-mcp#v1.0.1` will resolve to the new commit immediately — no CDN cache lag because each tag is an immutable ref.
+Testers running the curl URL or `npx -y github:awhite07/p39-custom-category-mcp#v1.0.2` will resolve to the new commit immediately — no CDN cache lag because each tag is an immutable ref.
 
 Never re-point an existing tag (`git push --force` on a tag) — that breaks caches in unpredictable ways for anyone who already installed.
 

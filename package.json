@@ -1,6 +1,6 @@
 {
   "name": "@peer39/mcp-server",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "MCP server for managing Peer39 Custom Categories — create, read, update, delete, and list contextual targeting / brand-safety lists on connected DSPs.",
   "type": "module",
   "main": "./dist/index.js",
