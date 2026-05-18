@@ -1,0 +1,43 @@
+{
+  "name": "@peer39/mcp-server",
+  "version": "1.0.0",
+  "description": "MCP server for managing Peer39 Custom Categories — create, read, update, delete, and list contextual targeting / brand-safety lists on connected DSPs.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "bin": {
+    "peer39-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit",
+    "prepare": "tsc",
+    "prepublishOnly": "npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/awhite07/p39-custom-category-mcp.git"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "peer39",
+    "contextual-targeting",
+    "brand-safety",
+    "dsp"
+  ],
+  "license": "UNLICENSED",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  }
+}
