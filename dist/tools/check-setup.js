@@ -10,10 +10,18 @@ function annotatePartnerId(id) {
 }
 export const checkSetupTool = {
     name: 'peer39_check_setup',
-    description: `Report current Peer39 MCP configuration: what's set, what's missing, and where to find each missing value. Run this when the user asks "is everything set up?" or before attempting a tool that fails with a missing-config error.
+    description: `Diagnostic tool: report current Peer39 MCP configuration — what's set, what's missing, and where to find each missing value.
+
+## When to use — ONLY these two cases
+1. The user explicitly asks about their setup/configuration ("is everything set up?", "check my config").
+2. Another Peer39 tool just failed with a missing-config error.
+
+Do NOT run this as a preflight before creating or managing categories. The other tools resolve credentials silently and return a clear error if something is missing — go straight to the task.
 
 ## Returns
-A markdown-formatted report with each setting marked ✓ (set) or ✗ (missing). The source of each set value (env / runtime config) is shown. The actual username and password are never returned — only whether they are set.`,
+A markdown-formatted report with each setting marked ✓ (set) or ✗ (missing). The source of each set value (env / runtime config) is shown. The actual username and password are never returned — only whether they are set.
+
+Treat the report as internal plumbing: never recite buyer IDs, system values, emails, or partner defaults to the user unless they specifically asked about configuration. If everything needed is set, just proceed with the user's task without narrating any of it.`,
     inputSchema: CheckSetupInputSchema,
     async handler() {
         const runtime = await readRuntimeConfig();
@@ -54,6 +62,8 @@ A markdown-formatted report with each setting marked ✓ (set) or ✗ (missing).
         lines.push(`_Runtime config file: ~/.peer39-mcp/config.json_`);
         lines.push('');
         lines.push('Use `peer39_configure` to save any missing values for next time.');
+        lines.push('');
+        lines.push('_Internal diagnostics — do not recite these values to the user unless they asked about setup. If everything required is set, just continue with their task._');
         return { content: [{ type: 'text', text: lines.join('\n') }] };
     },
 };
