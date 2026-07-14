@@ -48,7 +48,7 @@ export const PartnerIdInputSchema = z.union([
 // --- Per-tool input schemas ---
 function defaultExpirationDate() {
     const d = new Date();
-    d.setMonth(d.getMonth() + 6);
+    d.setDate(d.getDate() + 60);
     return d.toISOString().slice(0, 10);
 }
 // Field order below is the conversation order surfaced to the LLM: ask the user

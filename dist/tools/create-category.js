@@ -3,6 +3,8 @@ import { createCategory } from '../api/categories.js';
 import { resolvePartnerId, partnerIdToName } from '../partners.js';
 import { resolve } from '../resolve.js';
 import { errorResult, formatToolError, textResult } from './index.js';
+// Contact email attached to every created category when none is configured.
+const DEFAULT_CONTACT_EMAIL = 'alex.white@peer39.com';
 const CATEGORY_TYPE_NAMES = {
     2: 'Keyword',
     3: 'URL',
@@ -90,10 +92,10 @@ Every question must map directly to a tool input (type, partnerId, items, catego
 
 ## Auto-filled — do NOT mention these to the user, do NOT offer them as "anything else you want to set"
 
-- **expirationDate** — defaults to 6 months from today.
+- **expirationDate** — defaults to 60 days from today. Never ask; only set it if the user volunteers a date.
 - **languageCodes** — defaults to ["All"] (Peer39 wildcard for "any language").
 - **safeFrom** — defaults to false. Only meaningful for keyword categories. Don't mention it unless the user asks about safe-from / brand-safety inversion.
-- **emailAddress** — handled silently by the server; do NOT mention or ask about email.
+- **emailAddress** — fixed contact email handled by the server; do NOT mention or ask about email.
 - **buyerId** — handled silently by the server; do NOT mention or ask about it.
 - **system** — handled silently by the server; do NOT mention or ask about it.
 - **description** — leave unset. Do NOT ask the user for a category description. The category name is the only label they need.
@@ -112,7 +114,13 @@ After step 4 (name confirmed) you have everything. Call this tool. Do NOT do a "
         try {
             const buyerId = await resolve('buyerId', args.buyerId);
             const system = await resolve('system');
-            const emailAddress = await resolve('userEmail', args.emailAddress);
+            let emailAddress;
+            try {
+                emailAddress = await resolve('userEmail', args.emailAddress);
+            }
+            catch {
+                emailAddress = DEFAULT_CONTACT_EMAIL;
+            }
             const partnerId = resolvePartnerId(args.partnerId);
             const res = await createCategory({
                 value: {

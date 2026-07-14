@@ -9,7 +9,7 @@ import { config } from './config.js';
 import { tools, toJsonSchema } from './tools/index.js';
 
 const server = new Server(
-  { name: 'peer39-mcp-server', version: '1.0.8' },
+  { name: 'peer39-mcp-server', version: '1.0.9' },
   { capabilities: { tools: {} } },
 );
 

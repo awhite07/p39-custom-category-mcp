@@ -59,7 +59,7 @@ export const PartnerIdInputSchema = z.union([
 
 function defaultExpirationDate(): string {
   const d = new Date();
-  d.setMonth(d.getMonth() + 6);
+  d.setDate(d.getDate() + 60);
   return d.toISOString().slice(0, 10);
 }
 
