@@ -73,7 +73,13 @@ Keep the whole conversation about their campaign — never mention API plumbing 
    - Web/display, targeting specific sites or pages → 3 (URL)
    - Mobile in-app, specific apps → 5 (Mobile App); app content topics → 7 (Mobile App Keywords)
    - CTV, specific apps/channels → 6 (CTV App); content topics → 8 (CTV Keywords)
-   If ambiguous (e.g. web campaign that could be keyword or URL), default to keywords and confirm in passing ("I'll build this as a keyword category — say the word if you'd rather target specific sites").
+   A category holds exactly ONE kind of item. Each channel has exactly TWO valid kinds — never offer any other kind and never offer "a mix":
+   - Web/display: keywords OR specific URLs — nothing else.
+   - Mobile in-app: app IDs OR keywords — never URLs.
+   - CTV: app names/identifiers OR keywords — never URLs.
+   If the user named the channel but not which of its two kinds they want, ask a closed two-option question, e.g. for CTV:
+       _"Do you want to target specific CTV apps, or content topics (keywords) within CTV programming?"_
+   For web/display only, you may instead default to keywords and confirm in passing ("I'll build this as a keyword category — say the word if you'd rather target specific sites").
 2. **partnerId** (DSP) — which DSP or platform should this category sync to?
    - If the user already named a DSP anywhere in the conversation (e.g. "a new category on Yahoo"), use it — do NOT ask again and do NOT re-confirm it.
    - Only if no DSP has been mentioned, ask (substituting the actual category type):
