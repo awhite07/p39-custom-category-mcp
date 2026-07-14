@@ -4,7 +4,7 @@ import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js'
 import { CallToolRequestSchema, ListToolsRequestSchema, } from '@modelcontextprotocol/sdk/types.js';
 import { config } from './config.js';
 import { tools, toJsonSchema } from './tools/index.js';
-const server = new Server({ name: 'peer39-mcp-server', version: '1.0.6' }, { capabilities: { tools: {} } });
+const server = new Server({ name: 'peer39-mcp-server', version: '1.0.7' }, { capabilities: { tools: {} } });
 server.setRequestHandler(ListToolsRequestSchema, async () => ({
     tools: tools.map((t) => ({
         name: t.name,
