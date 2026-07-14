@@ -74,7 +74,7 @@ export const createCategoryTool: ToolDefinition = {
   description: `Create a new Peer39 custom category and sync it to a connected DSP.
 
 ## When to use
-The user wants to define a new contextual targeting or brand-safety list — keywords, URLs, mobile app bundle IDs, or CTV app identifiers — and have it activated in their DSP seat (Yahoo DSP, The Trade Desk, Microsoft Advertising / Xandr, MediaMath, Basis, etc.). When the user says they want to create a category, start this conversation flow immediately — do NOT run peer39_check_setup or any other tool first.
+The user wants to define a new contextual targeting or brand-safety list of keywords (or, for web campaigns, URLs) and have it activated in their DSP seat (Yahoo DSP, The Trade Desk, Microsoft Advertising / Xandr, MediaMath, Basis, etc.). When the user says they want to create a category, start this conversation flow immediately — do NOT run peer39_check_setup or any other tool first.
 
 ## Conversation flow — lead the user through these steps IN THIS ORDER, one step per message. Do NOT ask everything at once.
 
@@ -82,29 +82,23 @@ Keep the whole conversation about their campaign — never mention API plumbing 
 
 1. **Campaign goal & channel** (this determines **type**) — if the user hasn't already described what the category is for, open with:
        _"Who are you trying to reach, and what channel is the campaign running on — web/display, mobile app, or CTV?"_
-   Then derive the category type yourself from their answer. Do NOT ask the user to pick a type or show them type numbers:
-   - Web/display, targeting content topics → 2 (Keyword)
-   - Web/display, targeting specific sites or pages → 3 (URL)
-   - Mobile in-app, specific apps → 5 (Mobile App); app content topics → 7 (Mobile App Keywords)
-   - CTV, specific apps/channels → 6 (CTV App); content topics → 8 (CTV Keywords)
-   A category holds exactly ONE kind of item. Each channel has exactly TWO valid kinds — never offer any other kind and never offer "a mix":
-   - Web/display: keywords OR specific URLs — nothing else.
-   - Mobile in-app: app IDs OR keywords — never URLs.
-   - CTV: app names/identifiers OR keywords — never URLs.
-   If the user named the channel but not which of its two kinds they want, ask a closed two-option question, e.g. for CTV:
-       _"Do you want to target specific CTV apps, or content topics (keywords) within CTV programming?"_
-   For web/display only, you may instead default to keywords and confirm in passing ("I'll build this as a keyword category — say the word if you'd rather target specific sites").
-2. **partnerId** (DSP) — which DSP or platform should this category sync to?
-   - If the user already named a DSP anywhere in the conversation (e.g. "a new category on Yahoo"), use it — do NOT ask again and do NOT re-confirm it.
-   - Only if no DSP has been mentioned, ask (substituting the actual category type):
-       _"Which DSP or platform do you want to build this <category-type> category for?"_
-   - Do not fall back to a saved default without the user naming a DSP.
+   Then derive the category type yourself from their answer. Custom categories are keyword-based; the channel alone determines the type. Do NOT ask the user to pick a type, show them type numbers, or offer any item-kind menu:
+   - Web/display → 2 (Keyword) — or 3 (URL) only if they say they want to target specific sites/pages
+   - Mobile in-app → 7 (Mobile App Keywords)
+   - CTV → 8 (CTV Keywords)
+   A category holds exactly ONE kind of item — never offer "a mix". For mobile and CTV there is nothing to disambiguate: once you know the channel, go straight to step 2 — the category will be keywords. Do NOT offer app-ID / app-list categories (types 5 and 6 exist in the API but use them only if the user explicitly insists on targeting a list of specific apps). Never offer URLs outside web/display.
+   Web/display is the only channel with a choice (keywords vs specific URLs): default to keywords and confirm in passing ("I'll build this as a keyword category — say the word if you'd rather target specific sites").
+2. **partnerId** — which partner should this category sync to?
+   - If the user already named a partner anywhere in the conversation (e.g. "a new category on Yahoo"), use it — do NOT ask again and do NOT re-confirm it.
+   - Only if no partner has been mentioned, ask:
+       _"Which partner is this category for? (e.g. Yahoo DSP, The Trade Desk, Microsoft Advertising / Xandr, MediaMath, Basis)"_
+   - NEVER present "Peer39" as an option here — every custom category is built in Peer39 by definition; the only question is which partner it syncs to. Do not phrase this as "which platform".
+   - Do not fall back to a saved default without the user naming a partner.
    - Accept either a slug like "yahoo" / "the-trade-desk" / "xandr" / "basis" or a numeric partner ID.
-   - <category-type> should be the human-readable type name: "keyword", "URL", "mobile app", "CTV app", "mobile-app keyword", "CTV keyword". Don't say "type 2 keyword" — just "keyword".
-3. **items** — the actual keywords / URLs / app IDs. Non-empty array; each ≤1024 chars.
+3. **items** — the actual keywords (or URLs for a web URL category). Non-empty array; each ≤1024 chars.
    - Offer BOTH paths in your prompt. Use this phrasing pattern:
-       _"Now, what <items> do you want in the category? Share them as a list and I'll set them up — **or** we can discuss the types of content / <items> that would fit best and brainstorm them together."_
-     where <items> is "keywords", "URLs", "mobile app IDs", or "CTV app identifiers" depending on type.
+       _"Now, what <items> do you want in the category? Share them as a list and I'll set them up — **or** we can discuss the types of content that would fit best and brainstorm them together."_
+     where <items> is "keywords" or "URLs" depending on type.
    - If the user wants to brainstorm, propose 8–20 candidates based on their goal, present them as a numbered list, and let them edit (add / remove / refine) before locking in.
    - For keyword categories (type=2 only), you may also ask whether they want any items marked MUST_HAVE or EXCLUDE for boolean logic — but only if the user brings up that nuance. Default is REGULAR for all items.
 4. **categoryName** — always the LAST step; never bring up the name before the items are locked in. After they've given you the items, suggest a short name based on those items (≤120 chars, alphanumeric + space + "-" "&" "_" only) and confirm. Don't make them type a name from scratch unless they want to.
